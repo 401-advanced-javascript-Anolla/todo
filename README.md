@@ -7,7 +7,7 @@
 ### Links and Resources
 
 - [submission PR](https://github.com/401-advanced-javascript-Anolla/todo/pull/1)
-- [ci/cd](http://xyz.com) (GitHub Actions)
+- [ci/cd](https://github.com/401-advanced-javascript-Anolla/todo/pull/1/checks?check_run_id=839564020) (GitHub Actions)
 <!-- - [back-end server url](http://xyz.com) (when applicable) -->
 <!-- - [front-end application](http://xyz.com) (when applicable) -->
 
