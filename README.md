@@ -34,4 +34,4 @@
 
 #### UML
 
-!(UML)[./assests/lab31.png]
+![UML](./assests/lab31.png)
