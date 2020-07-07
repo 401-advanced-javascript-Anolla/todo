@@ -29,6 +29,8 @@ function ToDo(props) {
 
   };
 
+  
+
   useEffect(() => {
     let newlist = [
       { _id: 1, complete: false, text: 'Clean the Kitchen', difficulty: 3, assignee: 'Person A'},
@@ -71,6 +73,13 @@ function ToDo(props) {
             handleComplete={toggleComplete}
           />
         </div>
+
+        {/* <div>
+          <TodoList
+            handleDelete={toggleComplete}
+          />
+        </div> */}
+
       </section>
     </>
   );

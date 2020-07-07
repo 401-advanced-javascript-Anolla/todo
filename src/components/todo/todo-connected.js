@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import TodoForm from './form.js';
 import TodoList from './list.js';
+import axios from 'axios';
 
 import './todo.scss';
 
-const todoAPI = 'https://api-js401.herokuapp.com/api/v1/todo';
+const todoAPI = 'https://todo-app-server-lab32.herokuapp.com/api/v1/todo';
 
 
 const ToDo = () => {
@@ -13,16 +14,16 @@ const ToDo = () => {
 
   const _addItem = (item) => {
     item.due = new Date();
-    fetch(todoAPI, {
+    axios({
+      url:todoAPI,
       method: 'post',
       mode: 'cors',
       cache: 'no-cache',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(item)
+      data: JSON.stringify(item),
     })
-      .then(response => response.json())
-      .then(savedItem => {
-        setList([...list, savedItem])
+      .then(response => {
+        setList([...list, response.data]);
       })
       .catch(console.error);
   };
@@ -32,61 +33,91 @@ const ToDo = () => {
     let item = list.filter(i => i._id === id)[0] || {};
 
     if (item._id) {
-
-      item.complete = !item.complete;
-
-      let url = `${todoAPI}/${id}`;
-
-      fetch(url, {
-        method: 'put',
-        mode: 'cors',
-        cache: 'no-cache',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(item)
-      })
-        .then(response => response.json())
-        .then(savedItem => {
-          setList(list.map(listItem => listItem._id === item._id ? savedItem : listItem));
+      let item = list.filter(i => i._id === id)[0] || {};
+  
+      if (item._id) {
+  
+        item.complete = item.complete === 'complete' ? 'pending' : 'complete';
+  
+        let url = `${todoAPI}/${id}`;
+  
+        axios({
+          method: 'put',
+          url : url,
+          mode: 'cors',
+          cache: 'no-cache',
+          headers: { 'Content-Type': 'application/json' },
+          data: JSON.stringify(item),
         })
-        .catch(console.error);
-    }
-  };
+          .then(savedItem => {
+            setList(list.map(listItem => listItem._id === item._id ? savedItem.data : listItem));
+          })
+          .catch(console.error);
+      }
+    };
 
-  const _getTodoItems = () => {
-    fetch(todoAPI, {
-      method: 'get',
-      mode: 'cors',
-    })
-      .then(data => data.json())
-      .then(data => setList(data.results))
-      .catch(console.error);
-  };
+    const _getTodoItems = () => {
+    
+      axios.get(todoAPI)
+        .then(response => setList(response.data.result));
+    };
 
-  useEffect(_getTodoItems, []);
 
-  return (
-    <>
-      <header>
-        <h2>
+    const _deleteTodoItems = id => {
+
+      let item = list.filter(i => i._id === id)[0] || {};
+
+      if (item._id) {
+        let url = `${todoAPI}/${id}`;
+
+        axios( {
+          url : url,
+          method: 'delete',
+          mode: 'cors',
+          cache: 'no-cache',
+          headers: { 'Content-Type': 'application/json' },
+        })
+          .then(() => {
+            setList(list.filter(listItem => listItem._id !== item._id ));
+          })
+          .catch(console.error);
+      }
+    
+    };
+
+    useEffect(_getTodoItems, []);
+
+    return (
+      <>
+        <header>
+          <h2>
           There are {list.filter(item => !item.complete).length} Items To Complete
-        </h2>
-      </header>
+          </h2>
+        </header>
 
-      <section className="todo">
+        <section className="todo">
 
-        <div>
-          <TodoForm handleSubmit={_addItem} />
-        </div>
+          <div>
+            <TodoForm handleSubmit={_addItem} />
+          </div>
 
-        <div>
-          <TodoList
-            list={list}
-            handleComplete={_toggleComplete}
-          />
-        </div>
-      </section>
-    </>
-  );
+          <div>
+            <TodoList
+              list={list}
+              handleComplete={_toggleComplete}
+            />
+          </div>
+
+          <div>
+            <TodoList
+              handleDelete={_deleteTodoItems}
+            />
+          </div>
+
+        </section>
+      </>
+    );
+  };
 };
 
 export default ToDo;
