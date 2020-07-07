@@ -9,7 +9,7 @@ function TodoList(props) {
     <ul>
       {props.list.map(item => (
         <ListGroup.Item
-          variant="success"
+          variant={(item.complete)?'danger':'success'}
           className={`complete-${item.complete.toString()}`}
           key={item._id}
         >
