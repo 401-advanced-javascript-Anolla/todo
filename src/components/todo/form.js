@@ -38,7 +38,7 @@ function TodoForm(props) {
           <span>Assigned To</span>
           <input type="text" name="assignee" placeholder="Assigned To" onChange={handleInputChange} />
         </label>
-        <Button>Add Item</Button>
+        <Button type='submit' >Add Item</Button>
       </Form>
     </>
   );
