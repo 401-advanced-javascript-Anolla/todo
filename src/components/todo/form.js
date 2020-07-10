@@ -7,15 +7,13 @@ function TodoForm(props) {
   
 
   const handleInputChange = e => {
-    setItem( {...item, [e.target.name]: e.target.value } );
+    setItem( {...item, [e.target.name]: e.target.value } );    
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     e.target.reset();
     props.handleSubmit(item);
-    const clearItem = {};
-    setItem({clearItem});
   };
 
   return (

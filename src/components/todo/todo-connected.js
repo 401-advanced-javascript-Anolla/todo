@@ -15,15 +15,14 @@ const ToDo = () => {
   const _addItem = (item) => {
     item.due = new Date();
     axios({
-      url:todoAPI,
       method: 'post',
-      mode: 'cors',
-      cache: 'no-cache',
+      url: todoAPI,
       headers: { 'Content-Type': 'application/json' },
-      data: JSON.stringify(item),
+      data: item,
     })
-      .then(response => {
-        setList([...list, response.data]);
+      .then(response => response.data)
+      .then(postData => {
+        setList([...list, postData]);
       })
       .catch(console.error);
   };
@@ -37,87 +36,82 @@ const ToDo = () => {
   
       if (item._id) {
   
-        item.complete = item.complete === 'complete' ? 'pending' : 'complete';
+        item.complete = !item.complete;
   
         let url = `${todoAPI}/${id}`;
   
         axios({
           method: 'put',
           url : url,
-          mode: 'cors',
-          cache: 'no-cache',
           headers: { 'Content-Type': 'application/json' },
           data: JSON.stringify(item),
         })
-          .then(savedItem => {
-            setList(list.map(listItem => listItem._id === item._id ? savedItem.data : listItem));
+          .then(response => response.data)
+          .then(editedItem => {
+            setList(list.map(listItem => listItem._id === item._id ? editedItem : listItem));
           })
           .catch(console.error);
       }
     };
-
-    const _getTodoItems = () => {
-    
-      axios.get(todoAPI)
-        .then(response => setList(response.data.result));
-    };
-
-
-    const _deleteTodoItems = id => {
-
-      let item = list.filter(i => i._id === id)[0] || {};
-
-      if (item._id) {
-        let url = `${todoAPI}/${id}`;
-
-        axios( {
-          url : url,
-          method: 'delete',
-          mode: 'cors',
-          cache: 'no-cache',
-          headers: { 'Content-Type': 'application/json' },
-        })
-          .then(() => {
-            setList(list.filter(listItem => listItem._id !== item._id ));
-          })
-          .catch(console.error);
-      }
-    
-    };
-
-    useEffect(_getTodoItems, []);
-
-    return (
-      <>
-        <header>
-          <h2>
-          There are {list.filter(item => !item.complete).length} Items To Complete
-          </h2>
-        </header>
-
-        <section className="todo">
-
-          <div>
-            <TodoForm handleSubmit={_addItem} />
-          </div>
-
-          <div>
-            <TodoList
-              list={list}
-              handleComplete={_toggleComplete}
-            />
-          </div>
-
-          <div>
-            <TodoList
-              handleDelete={_deleteTodoItems}
-            />
-          </div>
-
-        </section>
-      </>
-    );
   };
+
+  const _getTodoItems = () => {
+    axios.get(todoAPI)
+      .then(response =>response.data )
+      .then(data => {
+        setList(data);
+      })
+      .catch(console.error);
+  };
+
+
+  const _deleteTodoItems = id => {
+
+    let item = list.filter(i => i._id === id)[0] || {};
+
+    if (item._id) {
+      let url = `${todoAPI}/${id}`;
+      axios( {
+        url : url,
+        method: 'delete',
+        headers: { 'Content-Type': 'application/json' },
+      })
+        .then(response => response.data)
+        .then(deletedItem => {
+          setList(list.filter(listItem => listItem._id !== deletedItem._id));
+        })
+        .catch(console.error);
+    }
+    
+  };
+
+  useEffect(_getTodoItems, []);
+
+  return (
+    <>
+      <header>
+        <h2>
+          There are {list.filter(item => !item.complete).length} Items To Complete
+        </h2>
+      </header>
+
+      <section className="todo">
+
+        <div>
+          <TodoForm handleSubmit={_addItem} />
+        </div>
+
+        <div>
+          <TodoList
+            list={list}
+            handleComplete={_toggleComplete}
+            handleDelete ={_deleteTodoItems}
+          />
+        </div>
+
+      </section>
+    </>
+  );
 };
 
 export default ToDo;
