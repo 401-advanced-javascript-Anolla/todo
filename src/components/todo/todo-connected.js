@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import TodoForm from './form.js';
 import TodoList from './list.js';
 import axios from 'axios';
+import Navbar from 'react-bootstrap/Navbar';
+import Nav from 'react-bootstrap/Nav';
 
 import './todo.scss';
 
@@ -90,9 +92,19 @@ const ToDo = () => {
   return (
     <>
       <header>
+
+        <Navbar bg="primary" variant="dark">
+          <Navbar.Brand href="#home">Home</Navbar.Brand>
+        </Navbar>
+
         <h2>
-          There are {list.filter(item => !item.complete).length} Items To Complete
+          <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+            <Nav className="mr-auto">
+              <Navbar.Brand href="#home">Todo List Manager {list.filter(item => !item.complete).length} </Navbar.Brand>
+            </Nav>
+          </Navbar>
         </h2>
+
       </header>
 
       <section className="todo">
