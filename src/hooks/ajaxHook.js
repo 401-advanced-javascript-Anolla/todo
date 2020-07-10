@@ -1,35 +1,56 @@
-import {useState} from 'react';
 import axios from 'axios';
 
-const useAjax = ()=>{
-  const [list, setList] = useState([]);
-  
-  const apiCall = (url, method, body) => {
-      
-    let config = {
-      method: method,
-      url,
-      data: body,
-      headers: { 'Content-Type': 'application/json' },
-    };
-  
-    axios.request(config)
-      .then(response => response.data)
-      .then(item => {
-        if (method === 'delete'){
-          setList(list.filter(listItem => listItem._id !== item._id));
-        } else if (method === 'post'){
-          setList([...list, item]);
-        } else if (method === 'get'){
-          setList(item);
-        } else if (method === 'put'){
-          setList(list.map(listItem => listItem._id === item._id ? item : listItem));
-        }
-  
-      })
-      .catch(console.error);
+const useAjax = (cb) => {
+  const getNote = async (url) => {
+    try {
+      const response = await axios.get(url);
+      return response.data;
+    } catch (error) {
+      console.error(error);
+    }
   };
-  return {list, apiCall};
+
+  const postNote = async (url, item) => {
+    try {
+      axios({
+        method: 'post',
+        url: url,
+        mode: 'cors',
+        cache: 'no-cache',
+        headers: { 'Content-Type': 'application/json' },
+        data: item,
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const putNote = async (url, data) => {
+    try {
+      await axios({
+        method: 'put',
+        url: url,
+        data: data,
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const deleteNote = async (url, _id) => {
+    try {
+      let id = { _id };
+      await axios({
+        method: 'delete',
+        url: url,
+        mode: 'cors',
+        data: id,
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  return [getNote, postNote, putNote, deleteNote];
 };
-  
+
 export default useAjax;
