@@ -1,4 +1,4 @@
-# LAB - Class 32
+# LAB - Class 33
 
 ## Project: To Do List Manager
 
@@ -6,7 +6,7 @@
 
 ### Links and Resources
 
-- [submission PR](https://github.com/401-advanced-javascript-Anolla/todo/pull/2)
+- [submission PR](https://github.com/401-advanced-javascript-Anolla/todo/pull/3)
 - [ci/cd](https://github.com/401-advanced-javascript-Anolla/todo/pull/1/checks?check_run_id=839564020) (GitHub Actions)
 <!-- - [back-end server url](http://xyz.com) (when applicable) -->
 <!-- - [front-end application](http://xyz.com) (when applicable) -->
